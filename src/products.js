@@ -1,42 +1,93 @@
-
-import data from './data.json';
 import CardComp from './card';
 import './main.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 
-function Products (){
-    let [item, setItems] = useState(data);
+function Products() {
+  const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    function handleSearch(event){
-      event.preventDefault()
-    let searchedValue = event.target.search.value;
-
-    let filteredItems = data.filter(function(item){return item.title.toLowerCase().includes(searchedValue.toLowerCase())})
-    setItems(filteredItems);
+  async function getData() {
+    const url = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
+    try {
+      const response = await fetch(url);
+      const result = await response.json();
+      console.log(result.meals);
+      setItems(result.meals);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false); 
+    }
   }
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+      const result = await response.json();
+      setCategories(result.categories);
+      console.log(result.categories);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchItemsByCategory = async (category) => {
+    try {
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`);
+      const result = await response.json();
+      setItems(result.meals);
+      console.log(result.meals);
+    } catch (error) {
+      console.error('Error fetching items by category:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchItemsByCategory('all');
+    getData();
+  }, []); 
+
+  const handleChange = async (event) => {
+    const changedValue = event.target.value;
+
+    if (changedValue === "all") {
+      
+      await getData('all');
+    } else {
+      await fetchItemsByCategory(changedValue);
+    }
+  };
+
   return (
     <>
-    <Form className="d-flex" onSubmit={handleSearch} id="myform">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              name="search"
-            />
-            <Button variant="outline-success" type='submit'>Search</Button>
-          </Form>
-    <div style= {{display:"flex", justifyContent:"space-between",marginTop:"2%"}}>
-    {item.map(function(item){
-        return(
-          <CardComp image={item.image_url} title={item.title} description={item.description} category={item.category} />
-        )
-    }
-    )}
-    </div>
+      <Form.Select aria-label="Default select example" onChange={handleChange}>
+        <option value="all">All</option>
+        {categories.map((category) => (
+          <option key={category.strCategory} value={category.strCategory}>
+            {category.strCategory}
+          </option>
+          
+        ))}
+      </Form.Select>
+
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px", marginTop: "3%" }}>
+  {loading ? (
+    <p>Loading...</p>
+  ) : (
+    items.length !== 0 ? (
+      items.map((item) => (
+        <CardComp key={item.idMeal} image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} />
+      ))
+    ) : (
+      <h3>No search results</h3>
+    )
+  )}
+</div>
     </>
   );
 }
+
 export default Products;
