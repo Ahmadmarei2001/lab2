@@ -4,60 +4,50 @@ import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 
 function Products() {
-  const [items, setItems] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  let [items, setItems] = useState([]);
+  let [categories, setCategories] = useState([]);
+  let [loading, setLoading] = useState(true);
 
-  async function getData() {
-    const url = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-    try {
-      const response = await fetch(url);
-      const result = await response.json();
-      console.log(result.meals);
+  async function getMeals() {
+   
+    
+      let response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+      let result = await response.json();
       setItems(result.meals);
       setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false); 
-    }
+    
   }
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+  
+  async function fetchCategories() {
+    
+      let response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
       const result = await response.json();
       setCategories(result.categories);
-      console.log(result.categories);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
+   
+  }
 
-  const fetchItemsByCategory = async (category) => {
-    try {
-      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`);
+  async function fetchMealsByCategory (category) {
+    
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=`+category);
       const result = await response.json();
       setItems(result.meals);
-      console.log(result.meals);
-    } catch (error) {
-      console.error('Error fetching items by category:', error);
-    }
-  };
+    
+  }
 
-  useEffect(() => {
+  useEffect(function()  {
     fetchCategories();
-    fetchItemsByCategory('all');
-    getData();
+    fetchMealsByCategory();
+    getMeals('all');
   }, []); 
 
-  const handleChange = async (event) => {
+  async function handleChange(event)  {
     const changedValue = event.target.value;
 
     if (changedValue === "all") {
       
-      await getData('all');
+      await getMeals('all');
     } else {
-      await fetchItemsByCategory(changedValue);
+      await fetchMealsByCategory(changedValue);
     }
   };
 
@@ -66,9 +56,9 @@ function Products() {
       <Form.Select aria-label="Default select example" onChange={handleChange}>
         <option value="all">All</option>
         {categories.map((category) => (
-          <option key={category.strCategory} value={category.strCategory}>
-            {category.strCategory}
+          <option key={category.strCategory} value={category.strCategory}>{category.strCategory}
           </option>
+          
           
         ))}
       </Form.Select>
@@ -77,7 +67,7 @@ function Products() {
   {loading ? (
     <p>Loading...</p>
   ) : (
-    items.length !== 0 ? (
+    items.length !== 0 ? (  
       items.map((item) => (
         <CardComp key={item.idMeal} image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} />
       ))
@@ -87,7 +77,7 @@ function Products() {
   )}
 </div>
     </>
-  );
+  )
 }
 
 export default Products;

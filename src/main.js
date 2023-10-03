@@ -5,37 +5,36 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 function Main() {
-  let [items, setItems] = useState([]);
+  let [items, setMeals] = useState([]);
   
  
 
 
-  async function getData(){
-    const url = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-    try{
-      const response = await fetch(url);
-      const result = await response.json();
-      console.log(result.meals)
-      setItems(result.meals)
-    }catch(error){
-      console.error(error);
-    }
+  async function getMealsData(){
+    
+      let response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+      let result = await response.json();
+      setMeals(result.meals)
+    
       }
 
-  useEffect(function (){getData()},[]) 
+  useEffect(function (){
+    
+    getMealsData()
+  
+  },[]) 
   
 
 
   async function handleSearch(event) {
     event.preventDefault();
     let searchedValue = event.target.search.value;
-    let url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchedValue}`;
 
-    let response = await fetch(url);
+    let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=`+searchedValue);
     let result = await response.json();
-
-    let filteredItems = result.meals.filter(function(item){return item.strMeal.toLowerCase().includes(searchedValue.toLowerCase())})
-    setItems(filteredItems);
+    setMeals(result.meals)
+    let filteredMeals = result.meals.filter(function(item){return item.strMeal.toLowerCase().includes(searchedValue.toLowerCase())})
+    setMeals(filteredMeals);
 
     
   }
@@ -43,7 +42,7 @@ return (
 
   <>
   <Form className="d-flex" onSubmit={handleSearch} id="myform">
-          <Form.Control
+          <Form.Control 
             type="search"
             placeholder="Search"
             className="me-2"
@@ -54,17 +53,17 @@ return (
           <Button variant="outline-success" type='submit'>Search</Button>
         </Form>
   <div style= {{display:"flex", flexWrap:"wrap", justifyContent:"space-between", gap:"20xp", marginTop:"3%"}}>
-  {items.length !==0 ? items.map(function(item){
+  {items.length !== 0 ? items.map(function(item){
           return(
             <>
-        <CardComp image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} category={item.strCategory} />
-        </>
+        <CardComp key={item.idMeal} image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} category={item.strCategory} />
+               </>
       )
   }
   ) : <h3>No search results</h3>}
-  </div>
-  </>
-);
+      </div>
+      </>
+  )
 }
 
 export default Main;
