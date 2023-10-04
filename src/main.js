@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 function Main() {
-  let [meals, setMeals] = useState([]);
+  let [items, setMeals] = useState([]);
   
  
 
@@ -53,10 +53,10 @@ return (
           <Button variant="outline-success" type='submit'>Search</Button>
         </Form>
   <div style= {{display:"flex", flexWrap:"wrap", justifyContent:"space-between", gap:"20xp", marginTop:"3%"}}>
-  {meals.length !== 0 ? meals.map(function(item){
+  {items && items.length !== 0 ? items.map(function(item){
           return(
             <>
-        <CardComp key={item.idMeal} image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} category={item.strCategory} />
+        <CardComp key={item.idMeal} image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} category={item.strCategory} FavoriteView={true} />
                </>
       )
   }
