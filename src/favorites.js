@@ -24,10 +24,8 @@ function Favorites (){
             return(
               <>
          <CardComp
-                  image={item.image} title={item.title} description={item.description} FavoriteView={false} index={index} handleDelete={() => {
-                    deleteFavorites(index);
-                  }}
-                />
+                  image={item.image} title={item.title} description={item.description} FavoriteView={false} index={index} 
+                  handleDelete={() => {deleteFavorites(index);}}/>
               </>
             );
           })

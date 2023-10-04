@@ -5,9 +5,11 @@ import Modal from 'react-bootstrap/Modal';
 
 function CardComp (props) {
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  function handleShow(){
+    setShow(!show)
+  }
 
+  
 
   function saveToLocalStorage (){
     if(localStorage.getItem("favorites")){
@@ -60,13 +62,13 @@ function CardComp (props) {
       </Card>
 
       {/* model show */}
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleShow}>
         <Modal.Header closeButton>
           <Modal.Title>{props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{props.description}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleShow}>
             Close
           </Button>
         </Modal.Footer>
