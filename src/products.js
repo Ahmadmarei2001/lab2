@@ -23,7 +23,7 @@ function Products() {
   }
 
   async function fetchMealsByCategory (category) {
-      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=`+category);
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=`+category);
       const result = await response.json();
       setItems(result.meals);
   }
@@ -53,14 +53,16 @@ function Products() {
         ))}
 
       </Form.Select>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px", marginTop: "3%" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px", marginTop: "2%" }}>
   {loading ? (
     <p>Loading...</p>
   ) : (
-    items && items.length !== 0 ? (  
-      items.map((item) => (
+    items && items.length !== 0 ? ( items.map((item) => (
+        
+        <>
         <CardComp key={item.idMeal} image={item.strMealThumb} title={item.strMeal} description={item.strInstructions} FavoriteView={true}
          />
+         </>
       ))
     ) : (
       <h3>No search results</h3>

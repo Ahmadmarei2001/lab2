@@ -29,14 +29,13 @@ function Main() {
   async function handleSearch(event) {
     event.preventDefault();
     let searchedValue = event.target.search.value;
-
     let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=`+searchedValue);
     let result = await response.json();
     setMeals(result.meals)
     let filteredMeals = result.meals.filter(function(item){return item.strMeal.toLowerCase().includes(searchedValue.toLowerCase())})
     setMeals(filteredMeals);
 
-    
+
   }
 return (
 

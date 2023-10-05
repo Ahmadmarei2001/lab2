@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CardComp from "./card"
 
-function Favorites (){
+function Profile (){
     let stringedFavorites = localStorage.getItem("favorites");
     let favorites = JSON.parse(stringedFavorites);
     let [favoritesState, setFavoritesState] = useState(favorites)
@@ -25,7 +25,7 @@ function Favorites (){
               <>
          <CardComp
                   image={item.image} title={item.title} description={item.description} FavoriteView={false} index={index} 
-                  handleDelete={() => {deleteFavorites(index);}}/>
+                  handleDelete={() => {deleteFavorites(index)}}/>
               </>
             );
           })
@@ -36,4 +36,4 @@ function Favorites (){
         </>
     )
 }
-export default Favorites;
+export default Profile;

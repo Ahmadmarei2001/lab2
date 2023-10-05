@@ -7,7 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import LogoutButton from './logout';
 
 function Header() {
-  let {isAuthenticated} = useAuth0()
+  let {isAuthenticated, user} = useAuth0()
   return (
     <>
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -18,7 +18,7 @@ function Header() {
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/products">Products</Nav.Link>
-            <Nav.Link href="/favorites">Favorites</Nav.Link>
+            {isAuthenticated && <Nav.Link href="/favorites">Profile</Nav.Link>}
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -32,7 +32,14 @@ function Header() {
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
-        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+        {isAuthenticated ? 
+        <>
+        <LogoutButton />
+        <img src={user.picture} style={{width: "75px", height: "75px", borderRadius: "50%", border: "2px solid #cddc39 ",filter: "drop-shadow (0 0 8px #ff5722)"}} />
+        <h3>{user.name}</h3>
+        </>
+        : 
+        <LoginButton />}
       </Container>
     </Navbar>
     </>
